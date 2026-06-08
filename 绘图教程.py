@@ -21,24 +21,61 @@ def f(x):
 def grad_f(x):
     return np.array([2*x[0],4*x[1]])
 
-def record_decreas(start_point,step_size):
-    x = np.array(start_point,dtype = float)
+# def record_decreas(start_point,step_size):
+#     x = np.array(start_point,dtype = float)
     
-    step_number = []
-    func_values = []
-    for i in range(50):
-        step_number.append(i)
-        func_values.append(f(x))
+#     step_number = []
+#     func_values = []
+#     for i in range(50):
+#         step_number.append(i)
+#         func_values.append(f(x))
+        
+#         x = x - step_size*grad_f(x)
+        
+#     return step_number,func_values
+
+# x1,alpha1 = record_decreas([5.0,5.0],step_size = 0.1)
+# x2,alpha2 = record_decreas([5.0,5.0],0.3)
+
+# plt.plot(x1,alpha1,'o-',label = 'samll step = 0.1')
+# plt.plot(x2,alpha2,'o-',label = 'big step = 0.3')  
+# plt.legend()
+# plt.show()
+
+def record_footprints(strat_point,step_size,steps = 30):
+    x = np.array(strat_point,dtype = float)
+    
+    foot_x = []
+    foot_y = []
+    for i in range(steps):
+        foot_x.append(x[0])
+        foot_y.append(x[1])
         
         x = x - step_size*grad_f(x)
-        
-    return step_number,func_values
+    return foot_x,foot_y 
 
-x1,alpha1 = record_decreas([5.0,5.0],step_size = 0.1)
-x2,alpha2 = record_decreas([5.0,5.0],0.3)
+fx,fy = record_footprints([5.0,5.0],0.1,steps = 20)
 
-plt.plot(x1,alpha1,'o-',label = 'samll step = 0.1')
-plt.plot(x2,alpha2,'o-',label = 'big step = 0.3')  
+#生成等高线
+x_grid = np.linspace(-6,6,100)
+y_grid = np.linspace(-6,6,100)
+
+X,Y = np.meshgrid(x_grid,y_grid)
+
+Z = X**2 + 2 * Y**2 
+#画线
+plt.contour(X,Y,Z,levels = 20,cmap = 'viridis',alpha = 0.6)
+plt.plot(fx,fy,'r-o',label = 'Alpgorithm Path')
+
+#标起点和终点
+plt.plot(fx[0],fy[0],'go',markersize = 10,label = 'Start')
+plt.plot(fx[-1],fy[-1],'ys',markersize = 10,label = 'End')
+
+#收尾
+plt.title('Footprint on the Mountain')
+plt.xlabel("x")
+plt.ylabel("y")
 plt.legend()
+plt.axis('equal')#让x,y比例一致
 plt.show()
-    
+
