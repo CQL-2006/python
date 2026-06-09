@@ -76,15 +76,70 @@ def grad_f(x):
 # plt.xlabel("x")
 # plt.ylabel("y")
 # plt.legend()
-# plt.axis('equal')#让x,y比例一致
+# plt.axis('equal')#让x,y比例一致 单图变比例用plt.axis("具体比例"y/x),多张图使用ax[i].set_ascept("具体比例"y/x)
+#除此之外，改变比例可以使用plt.yscale('log')以及plt.xscale('log')
+#若是作用在多张图上，使用ax[i].set_scale('log')
 # plt.show()
 
-x_eg1 = [1,2,3,4,5]
-y_eg1 = [2,5,3,8,4]
+# x_eg1 = [1,2,3,4,5]
+# y_eg1 = [2,5,3,8,4]
+# #第1个点大小10，第2个点大小50，第3个点大小100... 越来越大
+# sizes = [10,50,100,300,400]
+# #电脑会根据这组数字，自动从浅蓝渐变到深红
+# colors = [1,2,3,4,5]
+# plt.scatter(x_eg1,y_eg1,s = sizes ,c=colors,cmap = 'coolwarm',alpha = 0.7)
+# plt.title("Scatter Plot:Different Sizes and Colors")
+# plt.show()
 
-sizes = [10,50,100,300,400]
+def get_history(start_point,setp_size,max_setps = 30):
+    x = np.array(start_point , dtype=float)
+    hx,hy,hf = [],[],[]
+    
+    for i in range(max_setps):
+        hx.append(x[0])
+        hy.append(x[1])
+        hf.append(f(x))
+        
+        x = x - grad_f(x) * setp_size
+        
+        if f(x)> 1e6:
+            hx.append(x[0])
+            hy.append(x[1])
+            hf.append(f(x))
+            break
+    return hx,hy,hf
 
-colors = [1,2,3,4,5]
-plt.scatter(x_eg1,y_eg1,s = sizes ,c=colors,cmap = 'coolwarm',alpha = 0.7)
-plt.title("Scatter Plot:Different Sizes and Colors")
-plt.show()  
+hx1,hy1,hf1 = get_history([5,5],0.1)
+hx2,hy2,hf2 = get_history([5,5],0.4)
+hx3,hy3,hf3 = get_history([5,5],0.51)
+
+fig,ax = plt.subplots(1,2,figsize = (14,6))
+
+ax[0].plot(hf1,'b-o',label = 'step = 0.1',markersize = 4)
+ax[0].plot(hf2,'r-o',label = 'step = 0.4',markersize = 4)
+ax[0].plot(hf3,'g-o',label = 'step = 0.51',markersize = 4)
+
+ax[0].set_title("函数值")
+ax[0].set_xlabel('interactions')
+ax[0].set_ylabel('Function value')
+ax[0].set_yscale('log')
+ax[0].legend()
+
+x_grid = np.linspace(-6,6,100)  
+y_grid = np.linspace(-6,6,100) 
+X,Y = np.meshgrid(x_grid,y_grid)
+Z = X**2 + 2* Y**2
+ax[1].contour(X,Y,Z,levels = 20,cmap = 'viridis',alpha = 0.5)
+ax[1].plot(hx1,hy1,'b-o',label = 'setp = 0.1' , markersize = 4)
+ax[1].plot(hx2,hy2,'r-o',label = 'setp = 0.4' , markersize = 4)
+ax[1].plot(hx3,hy3,'g-o',label = 'setp = 0.51' , markersize = 4)
+
+ax[1].scatter(hx1[0],hy1[0],c = 'black',s = 100,zorder = 5,label = 'Strat')
+ax[1].set_xlabel("x")
+ax[1].set_ylabel("y")
+ax[1].set_aspect('equal')
+ax[1].legend()
+
+plt.tight_layout()
+plt.show()
+             
