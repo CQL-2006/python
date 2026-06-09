@@ -34,7 +34,7 @@ initial_point = [5.0, 5.0]
 lr = 0.3
 hx, hf = steepest_descent_with_history(initial_point, learning_rate=lr)
 
-print("最终最优解:", hx[-1])
+print("最终最优解:", hx[-1]) #倒数第一个
 print("最终最小值:", hf[-1])
 
 # 2. 开始绘图
