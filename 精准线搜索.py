@@ -51,6 +51,7 @@ Z = X**2 + 2*Y**2
 ax[1].contour(X,Y,Z,levels = 20,cmap = 'viridis',alpha = 0.5)
 ax[1].plot(h_x,h_y,'r-o')
 ax[1].set_title("road")
+ax[1].set_aspect('equal')
 
 plt.show()
         
